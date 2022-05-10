@@ -29,6 +29,13 @@ public class UserController {
 		return userRepo.findAll().stream().filter(PersonValidation::check).collect(Collectors.toList());
 	}
 
+	@GetMapping("{id}")
+	public User user(
+		@PathVariable long id
+	) {
+		return getUser(id);
+	}
+
 	@PostMapping
 	public Person create(
 		@RequestBody User user
