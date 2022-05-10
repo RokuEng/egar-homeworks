@@ -45,7 +45,7 @@ public class UserController {
 	}
 
 	private User getUser(long id) {
-		User user = userRepo.findById(id).orElseThrow(() -> {
+		User user = userRepo.findById(Long.valueOf(id)).orElseThrow(() -> {
 			return new UserNotFoundException(id);
 		});
 		return user;
