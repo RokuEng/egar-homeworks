@@ -1,17 +1,22 @@
 import dao.Dao;
 import dao.DaoImpl;
+import exception.SQLConnectionException;
 
-import java.sql.ResultSet;
+import java.sql.*;
 
 public class Application {
-    public static void main(String[] args) {
-        Dao<Object, Integer> dao = new DaoImpl();
+    public static void main(String[] args) throws SQLConnectionException {
 
-        Integer id = dao.usePreparedStatement("SELECT * FROM Coffee WHERE id = 0", ps -> {
-            ResultSet rs = ps.executeQuery();
-            return rs.getInt("id");
+        DaoImpl dao = new DaoImpl();
+
+        String name = dao.usePreparedStatement("SELECT * FROM Coffee WHERE id = ?", ps ->
+        {
+            ps.setInt(1,0);
+            ResultSet set = ps.executeQuery();
+            return set.getString("name");
         });
 
-        System.out.println(id);
+        System.out.println(name);
+
     }
 }
