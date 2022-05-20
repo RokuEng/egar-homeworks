@@ -7,7 +7,6 @@ import com.RokuEng.homeworks.les2.domains.entities.Update;
 import com.RokuEng.homeworks.les2.domains.entities.User;
 import com.RokuEng.homeworks.les2.domains.events.ExecutableEvent;
 import com.RokuEng.homeworks.les2.domains.events.SerializableEvent;
-import com.RokuEng.homeworks.les2.domains.traits.Executable;
 import com.RokuEng.homeworks.les2.domains.traits.Persistent;
 import com.RokuEng.homeworks.les2.domains.traits.Serializable;
 
