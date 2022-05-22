@@ -1,7 +1,6 @@
 package dao;
 
 import exception.SQLConnectionException;
-import exception.SQLExceptionWrapper;
 import exception.SQLPreparedStatementException;
 import util.ThrowingFunction;
 
@@ -9,7 +8,7 @@ import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
-public interface Dao<ENTITY, ID> {
+public interface Dao<E, ID> {
 
     String DB_URL = "jdbc:postgresql://localhost:5432/coffee";
     String DB_USERNAME = "postgres";
@@ -33,13 +32,13 @@ public interface Dao<ENTITY, ID> {
         });
     }
 
-//    List<ENTITY> findAll();
-//
-//    Optional<ENTITY> findById(ID id);
-//
-//    void save(ENTITY entity);
-//
-//    void update(ENTITY entity);
-//
-//    void delete(ENTITY entity);
+    List<E> findAll();
+
+    Optional<E> findById(ID id);
+
+    void save(E e);
+
+    void update(E e);
+
+    void delete(E e);
 }

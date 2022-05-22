@@ -1,0 +1,27 @@
+DROP TABLE IF EXISTS Provider CASCADE;
+CREATE TABLE Provider
+(
+    id INTEGER GENERATED ALWAYS AS IDENTITY (MAXVALUE 4096)
+        CONSTRAINT Provider_pk PRIMARY KEY,
+    "name" VARCHAR(64) NOT NULL,
+    "phone" VARCHAR(64) NOT NULL,
+    "margin" NUMERIC(6, 2) NOT NULL,
+);
+
+DROP TABLE IF EXISTS Coffee CASCADE;
+CREATE TABLE Coffee
+(
+    id INTEGER GENERATED ALWAYS AS IDENTITY (MAXVALUE 4096)
+        CONSTRAINT Coffee_pk PRIMARY KEY,
+    "name" VARCHAR(64) NOT NULL,
+    "type" SMALLINT NOT NULL,
+    provider_id INTEGER NOT NULL
+        CONSTRAINT Provider_fk REFERENCES Provider (id),
+);
+
+DROP TABLE IF EXISTS Provider_Coffee CASCADE;
+CREATE TABLE Provider_Coffee
+(
+    provider_id INTEGER NOT NULL,
+    coffee_id INTEGER NULL,
+);
