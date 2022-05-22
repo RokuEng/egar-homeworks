@@ -7,8 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Data
 @AllArgsConstructor
 public class OrganisationEntity {
-	private String id;
-	private String name;
+	private Integer id;
 	private String email;
 	private CustomerEntity customer;
 }

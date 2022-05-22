@@ -17,11 +17,14 @@ public class CoffeeDao implements Dao<CoffeeEntity, Integer> {
 	private static final String SELECT_ALL = QueryBuilder.build(SELECT, ALL, FROM, "coffee");
 
 	private static final String SELECT_BY_ID = QueryBuilder.build(SELECT, ALL, FROM, "coffee", WHERE, PREPARED("id"));
+
 	private static final String SELECT_PROVIDERS_BY_COFFEE_ID = QueryBuilder.build(
 		SELECT, ALL, FROM, "Provider_Coffee pc",
 		JOIN, "Provider p", ON, "p.id = pc.provider_id",
 		WHERE, PREPARED("coffee_id")
 	);
+
+	private static final String DELETE_COFFEE = QueryBuilder.build(DELETE, FROM, "Coffee", WHERE, PREPARED("id"));
 
 	private static final String SELECT_COFFEE_BY_COFFEE_ID = QueryBuilder.build(
 		SELECT, ALL, FROM, "Provider_Coffee pc",
@@ -63,16 +66,18 @@ public class CoffeeDao implements Dao<CoffeeEntity, Integer> {
 				ps.setInt(1, id);
 
 				ResultSet rs = ps.executeQuery();
-				rs.next();
 
-				CoffeeEntity coffeeEntity = new CoffeeEntity(
-					rs.getInt("id"),
-					rs.getString("name"),
-					rs.getShort("type"),
-					findAllProvidersByCoffeeId(rs.getInt("id"))
-				);
-
-				return Optional.of(coffeeEntity);
+				if (rs.next()) {
+					CoffeeEntity coffeeEntity = new CoffeeEntity(
+						rs.getInt("id"),
+						rs.getString("name"),
+						rs.getShort("type"),
+						findAllProvidersByCoffeeId(rs.getInt("id"))
+					);
+					return Optional.of(coffeeEntity);
+				} else {
+					return Optional.empty();
+				}
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -123,7 +128,16 @@ public class CoffeeDao implements Dao<CoffeeEntity, Integer> {
 
 	@Override
 	public void delete(CoffeeEntity coffeeEntity) {
-
+		try {
+			usePreparedStatement(DELETE_COFFEE,ps -> {
+				ps.setInt(1,coffeeEntity.getId());
+				ps.execute();
+				return true;
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 
 	private List<ProviderEntity> findAllProvidersByCoffeeId(Integer coffee_id) {

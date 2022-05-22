@@ -1,10 +1,11 @@
 package entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class CustomerEntity {
 	private Integer id;
 	private String name;
