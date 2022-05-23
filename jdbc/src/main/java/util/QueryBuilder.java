@@ -1,9 +1,8 @@
 package util;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import static util.DML.*;
+	import java.util.Arrays;
+	import java.util.List;
+	import java.util.stream.Collectors;
 
 public class QueryBuilder {
 
@@ -22,5 +21,7 @@ public class QueryBuilder {
 		keywords.stream().forEachOrdered(s -> sb.append(s + " "));
 
 		return sb.toString();
-	};
+	}
+
+	;
 }

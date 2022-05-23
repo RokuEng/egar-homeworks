@@ -38,7 +38,7 @@ public class CoffeeDao implements Dao<CoffeeEntity, Integer> {
 	@Override
 	public List<CoffeeEntity> findAll() {
 		try {
-			return usePreparedStatement(SELECT_ALL,ps -> {
+			return usePreparedStatement(SELECT_ALL, ps -> {
 
 				ResultSet rs = ps.executeQuery();
 
@@ -62,7 +62,7 @@ public class CoffeeDao implements Dao<CoffeeEntity, Integer> {
 	@Override
 	public Optional<CoffeeEntity> findById(Integer id) {
 		try {
-			return usePreparedStatement(SELECT_BY_ID,ps -> {
+			return usePreparedStatement(SELECT_BY_ID, ps -> {
 				ps.setInt(1, id);
 
 				ResultSet rs = ps.executeQuery();
@@ -90,8 +90,8 @@ public class CoffeeDao implements Dao<CoffeeEntity, Integer> {
 		try {
 			if (!findAll().stream().map(CoffeeEntity::getId).collect(Collectors.toList()).contains(coffeeEntity.getId())) {
 				usePreparedStatement(SAVE_COFFEE, ps -> {
-					ps.setString(1,coffeeEntity.getName());
-					ps.setShort(2,coffeeEntity.getType());
+					ps.setString(1, coffeeEntity.getName());
+					ps.setShort(2, coffeeEntity.getType());
 					ps.execute();
 					return true;
 				});
@@ -108,9 +108,9 @@ public class CoffeeDao implements Dao<CoffeeEntity, Integer> {
 	public void update(CoffeeEntity coffeeEntity) {
 		try {
 			usePreparedStatement(UPDATE_COFFEE, ps -> {
-				ps.setString(1,coffeeEntity.getName());
-				ps.setShort(2,coffeeEntity.getType());
-				ps.setInt(3,coffeeEntity.getId());
+				ps.setString(1, coffeeEntity.getName());
+				ps.setShort(2, coffeeEntity.getType());
+				ps.setInt(3, coffeeEntity.getId());
 				ps.execute();
 				return true;
 			});
@@ -123,8 +123,8 @@ public class CoffeeDao implements Dao<CoffeeEntity, Integer> {
 	@Override
 	public void delete(CoffeeEntity coffeeEntity) {
 		try {
-			usePreparedStatement(DELETE_COFFEE,ps -> {
-				ps.setInt(1,coffeeEntity.getId());
+			usePreparedStatement(DELETE_COFFEE, ps -> {
+				ps.setInt(1, coffeeEntity.getId());
 				ps.execute();
 				return true;
 			});
@@ -136,7 +136,7 @@ public class CoffeeDao implements Dao<CoffeeEntity, Integer> {
 
 	private List<ProviderEntity> findAllProvidersByCoffeeId(Integer coffee_id) {
 		try {
-			return usePreparedStatement(SELECT_PROVIDERS_BY_COFFEE_ID,ps -> {
+			return usePreparedStatement(SELECT_PROVIDERS_BY_COFFEE_ID, ps -> {
 				ps.setInt(1, coffee_id);
 				ResultSet rs = ps.executeQuery();
 
@@ -148,7 +148,7 @@ public class CoffeeDao implements Dao<CoffeeEntity, Integer> {
 					String phone = rs.getString("phone");
 					BigDecimal margin = rs.getBigDecimal("margin");
 
-					providers.add(new ProviderEntity(id,name,phone,margin, findAllCoffeeByProviderId(coffee_id)));
+					providers.add(new ProviderEntity(id, name, phone, margin, findAllCoffeeByProviderId(coffee_id)));
 				}
 
 				return providers;
@@ -171,7 +171,7 @@ public class CoffeeDao implements Dao<CoffeeEntity, Integer> {
 					String name = rs.getString("name");
 					Short type = rs.getShort("type");
 
-					coffee.add(new CoffeeEntity(id, name,type,null));
+					coffee.add(new CoffeeEntity(id, name, type, null));
 				}
 
 				return coffee;

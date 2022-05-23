@@ -14,8 +14,7 @@ public enum DML {
 	SET("SET"),
 	INTO("INTO"),
 	VALUES_START("VALUES("),
-	VALUES_END(")")
-	;
+	VALUES_END(")");
 
 	public static String PREPARED(String s) {
 		return s + " = ?";

@@ -1,8 +1,5 @@
 package dao;
 
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 

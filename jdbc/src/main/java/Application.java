@@ -1,4 +1,3 @@
-import dao.CoffeeDao;
 import dao.OrganisationDao;
 import exception.CoffeeNotFoundException;
 import exception.SQLConnectionException;
