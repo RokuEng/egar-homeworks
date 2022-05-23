@@ -89,9 +89,6 @@ public class CoffeeDao implements Dao<CoffeeEntity, Integer> {
 	public void save(CoffeeEntity coffeeEntity) {
 		try {
 			if (!findAll().stream().map(CoffeeEntity::getId).collect(Collectors.toList()).contains(coffeeEntity.getId())) {
-
-				System.out.println(SAVE_COFFEE);
-
 				usePreparedStatement(SAVE_COFFEE, ps -> {
 					ps.setString(1,coffeeEntity.getName());
 					ps.setShort(2,coffeeEntity.getType());
@@ -110,9 +107,6 @@ public class CoffeeDao implements Dao<CoffeeEntity, Integer> {
 	@Override
 	public void update(CoffeeEntity coffeeEntity) {
 		try {
-
-			System.out.println(UPDATE_COFFEE);
-
 			usePreparedStatement(UPDATE_COFFEE, ps -> {
 				ps.setString(1,coffeeEntity.getName());
 				ps.setShort(2,coffeeEntity.getType());
