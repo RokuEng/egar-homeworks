@@ -11,7 +11,7 @@ public class EMFUtil {
 
 	public EntityManagerFactory entityManagerFactory() {
 		if (emf == null) {
-			emf = Persistence.createEntityManagerFactory("RPGPersistence");
+			emf = Persistence.createEntityManagerFactory("persistence");
 		}
 
 		return emf;
