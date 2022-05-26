@@ -6,7 +6,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 @UtilityClass
-public class EMFUtil {
+public class EMFFactory {
 	private EntityManagerFactory emf;
 
 	public EntityManagerFactory entityManagerFactory() {

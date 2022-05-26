@@ -1,7 +1,7 @@
 package dao;
 
 import entity.Persistent;
-import util.EMFUtil;
+import util.EMFFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -37,7 +37,7 @@ public interface Dao<E extends Persistent<ID>, ID> {
 	}
 
 	default <T> T useEntityManager(FetchType fetchType, Function<EntityManager, T> function) {
-		EntityManager entityManager = EMFUtil.entityManagerFactory().createEntityManager();
+		EntityManager entityManager = EMFFactory.entityManagerFactory().createEntityManager();
 
 		T result = function.apply(entityManager);
 
