@@ -3,11 +3,12 @@ package dao;
 import entity.person.Person;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PersonDao implements Dao<Person, Integer> {
 
 	@Override
-	public Person findById(Integer integer) {
+	public Optional<Person> findById(Integer integer) {
 		return findById(Person.class, integer);
 	}
 

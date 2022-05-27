@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class Person implements Persistent<Integer> {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "id")
 	private Integer id;
 

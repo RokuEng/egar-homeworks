@@ -1,6 +1,7 @@
 package util;
 
 import entity.employee.Employee;
+import entity.employee.State;
 import entity.job.Job;
 import entity.person.Gender;
 import entity.person.Person;
@@ -13,13 +14,13 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 @UtilityClass
-public class PersonGenerator {
+public class EntityFactory {
 
 	private final String[] names = {"John", "Tiler", "Alexandr", "Kate", "Fill", "Konstantin", "Connor", "Murad", "Alice", "Alina"};
 	private final String[] lastnames = {"Smith", "Derden", "Will", "Nora", "Karaev"};
 	private final Gender[] genders = Gender.values();
 	private final BigDecimal[] salary = {salary(500d), salary(1000d), salary(2000d), salary(4000d), salary(8000d)};
-	private final String[] jobs = {"Software Engineer", "Data Scientist", "Machine Learning Engineer", "Cleaner", "Artist"};
+	private final String[] job_names = {"Software Engineer", "Data Scientist", "Machine Learning Engineer", "Cleaner", "Artist"};
 
 	public Person person() {
 		Person person = new Person();
@@ -36,9 +37,8 @@ public class PersonGenerator {
 		Employee employee = new Employee();
 
 		employee.setSalary(random(salary));
-		employee.setFriends(list(PersonGenerator::person));
+		employee.setFriends(list(EntityFactory::person));
 		employee.setPerson(person());
-		employee.setJobs(list(PersonGenerator::job));
 
 		return employee;
 	}
@@ -46,15 +46,15 @@ public class PersonGenerator {
 	public Job job() {
 		Job job = new Job();
 
-		job.setName(random(jobs));
-
-		job.setWorkers(list(PersonGenerator::job_employee));
-		job.getWorkers().forEach(w -> w.getJobs().add(job));
-
-		job.setDirector(job_employee());
-		job.getDirector().getJobs().add(job);
+		job.setName(random(job_names));
 
 		return job;
+	}
+
+	public State state() {
+		State state = new State();
+		System.out.println(state);
+		return state;
 	}
 
 	private  <T> T random(T[] e) {
@@ -77,7 +77,7 @@ public class PersonGenerator {
 		Employee employee = new Employee();
 
 		employee.setSalary(random(salary));
-		employee.setFriends(list(PersonGenerator::person));
+		employee.setFriends(list(EntityFactory::person));
 		employee.setPerson(person());
 
 		return employee;

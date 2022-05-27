@@ -13,37 +13,43 @@ import javax.persistence.criteria.Root;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public interface Dao<E extends Persistent<ID>, ID> {
 
-	E findById(ID id);
+	Optional<E> findById(ID id);
 	List<E> findAll();
 
-	default E findById(Class<E> clazz, ID id) {
-		return useEntityManager(em -> em.find(clazz, id));
+	default Optional<E> findById(Class<E> clazz, ID id) {
+		return useEntityManager(em -> Optional.of(em.find(clazz, id)));
 	}
 
 	default List<E> findAll(Class<E> clazz) {
 		return useCriteriaQuery(clazz,(cb, query, root) -> query.where(cb.isNotNull(root.get("id"))));
 	}
 
-	default E findByEntityGraph(ID id, GraphType type, Class<E> clazz, Function<EntityGraph<E>, EntityGraph<E>> function) {
+	default Optional<E> findByEntityGraph(ID id, GraphType type, Class<E> clazz, Consumer<EntityGraph<E>> function) {
 		return useEntityManager(em -> {
 			EntityGraph<E> entityGraph = em.createEntityGraph(clazz);
 
-			entityGraph = function.apply(entityGraph);
+			function.accept(entityGraph);
 
 			Map<String, Object> p = new HashMap<>();
 			p.put(type.property, entityGraph);
 
-			return em.find(clazz,id);
+			return Optional.of(em.find(clazz,id, p));
 		});
+	}
+
+	default Optional<E> findByEntityGraph(ID id, Class<E> clazz, Consumer<EntityGraph<E>> function) {
+		return findByEntityGraph(id,GraphType.FETCH, clazz, function);
 	}
 
 	default E save(E e) {
 		return useTransaction(entityManager -> {
-			if (e.getId() == null) {
+			if (e.getId() == null && !entityManager.contains(e)) {
 				entityManager.persist(e);
 				return e;
 			} else {
