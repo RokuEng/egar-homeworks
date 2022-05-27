@@ -1,7 +1,7 @@
-package domain.job;
+package entity.job;
 
-import domain.Persistent;
-import domain.employee.Employee;
+import entity.Persistent;
+import entity.employee.Employee;
 import lombok.Data;
 import lombok.ToString;
 

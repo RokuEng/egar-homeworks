@@ -1,9 +1,9 @@
 package util;
 
-import domain.employee.Employee;
-import domain.job.Job;
-import domain.person.Gender;
-import domain.person.Person;
+import entity.employee.Employee;
+import entity.job.Job;
+import entity.person.Gender;
+import entity.person.Person;
 import lombok.experimental.UtilityClass;
 
 import java.math.BigDecimal;

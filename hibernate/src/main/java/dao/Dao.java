@@ -1,6 +1,6 @@
 package dao;
 
-import domain.Persistent;
+import entity.Persistent;
 import util.EMFFactory;
 import util.TriFunction;
 

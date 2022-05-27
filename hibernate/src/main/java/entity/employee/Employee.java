@@ -1,8 +1,8 @@
-package domain.employee;
+package entity.employee;
 
-import domain.Persistent;
-import domain.job.Job;
-import domain.person.Person;
+import entity.Persistent;
+import entity.job.Job;
+import entity.person.Person;
 import lombok.Data;
 
 import javax.persistence.*;

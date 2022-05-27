@@ -1,7 +1,7 @@
-package domain.person;
+package entity.person;
 
-import domain.Audit;
-import domain.Persistent;
+import entity.Audit;
+import entity.Persistent;
 import lombok.Data;
 
 import javax.persistence.*;

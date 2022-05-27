@@ -1,4 +1,4 @@
-package domain.person;
+package entity.person;
 
 public enum Gender {
 	MALE,
