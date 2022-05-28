@@ -56,43 +56,14 @@ public interface Dao<E extends Persistent<ID>, ID> {
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+	default <T> T useEntityManager(Function<EntityManager, T> function) {
+		return useEntityManager(FetchType.LAZY, function);
+	}
+
 	default <T> T useEntityGraph(GraphType type, Class<E> clazz, Function<EntityGraph<E>, T> function) {
 		return useEntityManager(em -> {
 			EntityGraph<E> entityGraph = em.createEntityGraph(clazz);
 			return function.apply(entityGraph);
-		});
-	}
-
-	default Map<String, Object> getEntityGraphProperties(Class<E> clazz, Consumer<EntityGraph<E>> function) {
-		return getEntityGraphProperties(GraphType.FETCH, clazz, function);
-	}
-
-	default Map<String, Object> getEntityGraphProperties(GraphType type, Class<E> clazz, Consumer<EntityGraph<E>> function) {
-		return useEntityManager(em ->
-			useEntityGraph(type, clazz, eg -> {
-					function.accept(eg);
-
-					Map<String, Object> p = new HashMap<>();
-					p.put(type.property, eg);
-
-					return p;
-				}
-			));
-	}
-
-	default List<E> findAllEntityGraph(GraphType type, Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
-		return useEntityManager(em -> {
-			Map<String, Object> p = getEntityGraphProperties(type, clazz, consumer);
-			return useCriteriaQuery(clazz, p,(cb, query, root) -> {
-				query.where(cb.isNotNull(root.get("id")));
-			});
-		});
-	}
-
-	default Optional<E> findByIdEntityGraph(ID id, GraphType type, Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
-		return useEntityManager(em -> {
-			Map<String, Object> p = getEntityGraphProperties(type, clazz, consumer);
-			return Optional.of(em.find(clazz, id, p));
 		});
 	}
 
@@ -106,22 +77,6 @@ public interface Dao<E extends Persistent<ID>, ID> {
 
 			return result;
 		});
-	}
-
-	default <T> T useEntityManager(FetchType fetchType, Function<EntityManager, T> function) {
-		EntityManager em = EMFFactory.entityManagerFactory().createEntityManager();
-
-		T result = function.apply(em);
-
-		if (fetchType == FetchType.EAGER) {
-			em.close();
-		}
-
-		return result;
-	}
-
-	default <T> T useEntityManager(Function<EntityManager, T> function) {
-		return useEntityManager(FetchType.LAZY, function);
 	}
 
 	default List<E> useCriteriaQuery(Class<E> clazz, Map<String, Object> hint, TriConsumer<CriteriaBuilder, CriteriaQuery<E>, Root<E>> function) {
@@ -141,6 +96,49 @@ public interface Dao<E extends Persistent<ID>, ID> {
 				return em.createQuery(query).setHint(hintEntry.getKey(), hintEntry.getValue()).getResultList();
 			}
 		});
+	}
+
+	default <T> T useEntityManager(FetchType fetchType, Function<EntityManager, T> function) {
+		EntityManager em = EMFFactory.entityManagerFactory().createEntityManager();
+
+		T result = function.apply(em);
+
+		if (fetchType == FetchType.EAGER) {
+			em.close();
+		}
+
+		return result;
+	}
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+	default List<E> findAllEntityGraph(GraphType type, Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
+		return useEntityManager(em -> {
+			Map<String, Object> p = getEntityGraphProperties(type, clazz, consumer);
+			return useCriteriaQuery(clazz, p,(cb, query, root) -> {
+				query.where(cb.isNotNull(root.get("id")));
+			});
+		});
+	}
+
+	default Optional<E> findByIdEntityGraph(ID id, GraphType type, Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
+		return useEntityManager(em -> {
+			Map<String, Object> p = getEntityGraphProperties(type, clazz, consumer);
+			return Optional.of(em.find(clazz, id, p));
+		});
+	}
+
+	default Map<String, Object> getEntityGraphProperties(GraphType type, Class<E> clazz, Consumer<EntityGraph<E>> function) {
+		return useEntityManager(em ->
+			useEntityGraph(type, clazz, eg -> {
+					function.accept(eg);
+
+					Map<String, Object> p = new HashMap<>();
+					p.put(type.property, eg);
+
+					return p;
+				}
+			));
 	}
 
 	enum GraphType {
