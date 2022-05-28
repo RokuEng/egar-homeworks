@@ -31,16 +31,16 @@ public interface Dao<E extends Persistent<ID>, ID> {
 		return findByCriteria(clazz, (cb, query, root) -> query.where(cb.isNotNull(root.get("id"))));
 	}
 
+	default List<E> findByCriteria(Class<E> clazz, TriConsumer<CriteriaBuilder, CriteriaQuery<E>, Root<E>> function) {
+		return useCriteriaQuery(clazz, null, function);
+	}
+
 	default Optional<E> findByIdEntityGraph(ID id, Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
 		return findByIdEntityGraph(id, GraphType.FETCH, clazz, consumer);
 	}
 
 	default List<E> findAllEntityGraph(Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
 		return findAllEntityGraph(GraphType.FETCH, clazz, consumer);
-	}
-
-	default List<E> findByCriteria(Class<E> clazz, TriConsumer<CriteriaBuilder, CriteriaQuery<E>, Root<E>> function) {
-		return useCriteriaQuery(clazz, null, function);
 	}
 
 	default E save(E e) {
