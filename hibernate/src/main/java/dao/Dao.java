@@ -2,7 +2,7 @@ package dao;
 
 import entity.Persistent;
 import util.EMFFactory;
-import util.TriFunction;
+import util.TriConsumer;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
@@ -20,6 +20,7 @@ import java.util.function.Function;
 public interface Dao<E extends Persistent<ID>, ID> {
 
 	Optional<E> findById(ID id);
+
 	List<E> findAll();
 
 	default Optional<E> findById(Class<E> clazz, ID id) {
@@ -27,24 +28,7 @@ public interface Dao<E extends Persistent<ID>, ID> {
 	}
 
 	default List<E> findAll(Class<E> clazz) {
-		return useCriteriaQuery(clazz,(cb, query, root) -> query.where(cb.isNotNull(root.get("id"))));
-	}
-
-	default Optional<E> findByEntityGraph(ID id, GraphType type, Class<E> clazz, Consumer<EntityGraph<E>> function) {
-		return useEntityManager(em -> {
-			EntityGraph<E> entityGraph = em.createEntityGraph(clazz);
-
-			function.accept(entityGraph);
-
-			Map<String, Object> p = new HashMap<>();
-			p.put(type.property, entityGraph);
-
-			return Optional.of(em.find(clazz,id, p));
-		});
-	}
-
-	default Optional<E> findByEntityGraph(ID id, Class<E> clazz, Consumer<EntityGraph<E>> function) {
-		return findByEntityGraph(id,GraphType.FETCH, clazz, function);
+		return useCriteriaQuery(clazz, (cb, query, root) -> query.where(cb.isNotNull(root.get("id"))));
 	}
 
 	default E save(E e) {
@@ -55,6 +39,58 @@ public interface Dao<E extends Persistent<ID>, ID> {
 			} else {
 				return entityManager.merge(e);
 			}
+		});
+	}
+
+	default Optional<E> findByIdEntityGraph(ID id, Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
+		return findByIdEntityGraph(id, GraphType.FETCH, clazz, consumer);
+	}
+
+	default List<E> findAllEntityGraph(Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
+		return findAllEntityGraph(GraphType.FETCH, clazz, consumer);
+	}
+
+	default List<E> useCriteriaQuery(Class<E> clazz, TriConsumer<CriteriaBuilder, CriteriaQuery<E>, Root<E>> function) {
+		return useCriteriaQuery(clazz, null, function);
+	}
+
+	default <T> T useEntityGraph(GraphType type, Class<E> clazz, Function<EntityGraph<E>, T> function) {
+		return useEntityManager(em -> {
+			EntityGraph<E> entityGraph = em.createEntityGraph(clazz);
+			return function.apply(entityGraph);
+		});
+	}
+
+	default Map<String, Object> getEntityGraphProperties(Class<E> clazz, Consumer<EntityGraph<E>> function) {
+		return getEntityGraphProperties(GraphType.FETCH, clazz, function);
+	}
+
+	default Map<String, Object> getEntityGraphProperties(GraphType type, Class<E> clazz, Consumer<EntityGraph<E>> function) {
+		return useEntityManager(em ->
+			useEntityGraph(type, clazz, eg -> {
+					function.accept(eg);
+
+					Map<String, Object> p = new HashMap<>();
+					p.put(type.property, eg);
+
+					return p;
+				}
+			));
+	}
+
+	default List<E> findAllEntityGraph(GraphType type, Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
+		return useEntityManager(em -> {
+			Map<String, Object> p = getEntityGraphProperties(type, clazz, consumer);
+			return useCriteriaQuery(clazz, (cb, query, root) -> {
+				query.where(cb.isNotNull(root.get("id")));
+			});
+		});
+	}
+
+	default Optional<E> findByIdEntityGraph(ID id, GraphType type, Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
+		return useEntityManager(em -> {
+			Map<String, Object> p = getEntityGraphProperties(type, clazz, consumer);
+			return Optional.of(em.find(clazz, id, p));
 		});
 	}
 
@@ -70,10 +106,6 @@ public interface Dao<E extends Persistent<ID>, ID> {
 		});
 	}
 
-	default <T> T useEntityManager(Function<EntityManager, T> function) {
-		return useEntityManager(FetchType.LAZY, function);
-	}
-
 	default <T> T useEntityManager(FetchType fetchType, Function<EntityManager, T> function) {
 		EntityManager em = EMFFactory.entityManagerFactory().createEntityManager();
 
@@ -86,7 +118,11 @@ public interface Dao<E extends Persistent<ID>, ID> {
 		return result;
 	}
 
-	default List<E> useCriteriaQuery(Class<E> clazz, TriFunction<CriteriaBuilder, CriteriaQuery<E>, Root<E>, CriteriaQuery<E>> function) {
+	default <T> T useEntityManager(Function<EntityManager, T> function) {
+		return useEntityManager(FetchType.LAZY, function);
+	}
+
+	default List<E> useCriteriaQuery(Class<E> clazz, Map<String, Object> hint, TriConsumer<CriteriaBuilder, CriteriaQuery<E>, Root<E>> function) {
 		return useEntityManager(em ->
 		{
 			CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -94,9 +130,14 @@ public interface Dao<E extends Persistent<ID>, ID> {
 
 			Root<E> root = query.from(clazz);
 
-			query = function.apply(cb, query, root);
+			function.accept(cb, query, root);
 
-			return em.createQuery(query).getResultList();
+			if (hint == null) {
+				return em.createQuery(query).getResultList();
+			} else {
+				Map.Entry<String, Object> hintEntry = hint.entrySet().stream().findFirst().orElseThrow();
+				return em.createQuery(query).setHint(hintEntry.getKey(), hintEntry.getValue()).getResultList();
+			}
 		});
 	}
 

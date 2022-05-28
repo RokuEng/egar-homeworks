@@ -17,8 +17,6 @@ public class StateDao implements Dao<State, Integer> {
 	}
 
 	public Optional<State> findByIdWithEmployees(Integer id) {
-		return findByEntityGraph(id, State.class, eg -> {
-			eg.addAttributeNodes("employees");
-		});
+		return findByIdEntityGraph(id, State.class, eg -> eg.addAttributeNodes("employees"));
 	}
 }

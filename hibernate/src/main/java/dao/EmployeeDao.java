@@ -3,6 +3,7 @@ package dao;
 import entity.employee.Employee;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class EmployeeDao implements Dao<Employee, Integer> {
@@ -17,6 +18,11 @@ public class EmployeeDao implements Dao<Employee, Integer> {
 	}
 
 	public Optional<Employee> findByIdWithPerson(Integer integer) {
-		return findByEntityGraph(integer,Employee.class,eg -> eg.addAttributeNodes("person"));
+		return findByIdEntityGraph(integer,Employee.class, eg -> eg.addAttributeNodes("person"));
+	}
+
+	public List<Employee> findAllWithPerson() {
+		Map<String, Object> p = getEntityGraphProperties(Employee.class, eg -> eg.addAttributeNodes("person"));
+		return useCriteriaQuery(Employee.class,p,(cb, query, root) -> query.where(cb.isNotNull(root.get("id"))));
 	}
 }
