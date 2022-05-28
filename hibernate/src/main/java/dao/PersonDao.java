@@ -18,13 +18,13 @@ public class PersonDao implements Dao<Person, Integer> {
 	}
 
 	public List<Person> findByAge(Integer age) {
-		return useCriteriaQuery(Person.class,(cb, query, root) -> query.where(
+		return findByCriteria(Person.class,(cb, query, root) -> query.where(
 			cb.equal(root.get("age"),age)
 		));
 	}
 
 	public List<Person> findByAgeGreater(Integer age) {
-		return useCriteriaQuery(Person.class,(cb, query, root) -> query.where(
+		return findByCriteria(Person.class,(cb, query, root) -> query.where(
 			cb.greaterThan(root.get("age"),age)
 		));
 	}

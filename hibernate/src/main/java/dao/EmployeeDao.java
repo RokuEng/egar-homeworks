@@ -22,7 +22,6 @@ public class EmployeeDao implements Dao<Employee, Integer> {
 	}
 
 	public List<Employee> findAllWithPerson() {
-		Map<String, Object> p = getEntityGraphProperties(Employee.class, eg -> eg.addAttributeNodes("person"));
-		return useCriteriaQuery(Employee.class,p,(cb, query, root) -> query.where(cb.isNotNull(root.get("id"))));
+		return findAllEntityGraph(Employee.class,eg -> eg.addAttributeNodes("person"));
 	}
 }

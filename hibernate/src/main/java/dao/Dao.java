@@ -28,7 +28,19 @@ public interface Dao<E extends Persistent<ID>, ID> {
 	}
 
 	default List<E> findAll(Class<E> clazz) {
-		return useCriteriaQuery(clazz, (cb, query, root) -> query.where(cb.isNotNull(root.get("id"))));
+		return findByCriteria(clazz, (cb, query, root) -> query.where(cb.isNotNull(root.get("id"))));
+	}
+
+	default Optional<E> findByIdEntityGraph(ID id, Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
+		return findByIdEntityGraph(id, GraphType.FETCH, clazz, consumer);
+	}
+
+	default List<E> findAllEntityGraph(Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
+		return findAllEntityGraph(GraphType.FETCH, clazz, consumer);
+	}
+
+	default List<E> findByCriteria(Class<E> clazz, TriConsumer<CriteriaBuilder, CriteriaQuery<E>, Root<E>> function) {
+		return useCriteriaQuery(clazz, null, function);
 	}
 
 	default E save(E e) {
@@ -42,17 +54,7 @@ public interface Dao<E extends Persistent<ID>, ID> {
 		});
 	}
 
-	default Optional<E> findByIdEntityGraph(ID id, Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
-		return findByIdEntityGraph(id, GraphType.FETCH, clazz, consumer);
-	}
-
-	default List<E> findAllEntityGraph(Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
-		return findAllEntityGraph(GraphType.FETCH, clazz, consumer);
-	}
-
-	default List<E> useCriteriaQuery(Class<E> clazz, TriConsumer<CriteriaBuilder, CriteriaQuery<E>, Root<E>> function) {
-		return useCriteriaQuery(clazz, null, function);
-	}
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	default <T> T useEntityGraph(GraphType type, Class<E> clazz, Function<EntityGraph<E>, T> function) {
 		return useEntityManager(em -> {
@@ -81,7 +83,7 @@ public interface Dao<E extends Persistent<ID>, ID> {
 	default List<E> findAllEntityGraph(GraphType type, Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
 		return useEntityManager(em -> {
 			Map<String, Object> p = getEntityGraphProperties(type, clazz, consumer);
-			return useCriteriaQuery(clazz, (cb, query, root) -> {
+			return useCriteriaQuery(clazz, p,(cb, query, root) -> {
 				query.where(cb.isNotNull(root.get("id")));
 			});
 		});
