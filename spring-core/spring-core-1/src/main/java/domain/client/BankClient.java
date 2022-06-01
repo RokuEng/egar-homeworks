@@ -1,12 +1,11 @@
 package domain.client;
 
 import domain.account.Account;
-import domain.account.ClientAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class BankClient implements Client {
 
-	private Account account;
+	private final Account account;
 
 	@Autowired
 	public BankClient(Account account) {
@@ -24,9 +23,4 @@ public class BankClient implements Client {
 			getIncome(account.getMoney(), account.getProgram().getIncomingModifier())
 		);
 	}
-
-//	@Autowired
-//	public void setAccount(Account account) {
-//		this.account = account;
-//	}
 }

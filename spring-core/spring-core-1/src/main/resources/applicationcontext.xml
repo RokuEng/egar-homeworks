@@ -6,8 +6,7 @@
 
     <bean name="client"
           class="domain.client.BankClient"
-          scope="prototype"
-    >
+          scope="prototype">
         <constructor-arg ref="account"/>
     </bean>
 
@@ -18,6 +17,6 @@
         <constructor-arg ref="program"/>
     </bean>
 
-    <bean name="program" class="domain.program.BestProgram"/>
+    <bean name="program" class="domain.program.PreferentialProgram"/>
 
 </beans>

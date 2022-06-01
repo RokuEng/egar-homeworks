@@ -8,7 +8,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.util.function.Function;
 
 @UtilityClass
-public class Context {
+public class ContextBeanFactory {
 
 	public Client client() {
 		return useContext(context -> context.getBean("client",Client.class));
