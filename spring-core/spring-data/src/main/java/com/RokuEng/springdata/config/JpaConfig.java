@@ -18,64 +18,64 @@ import javax.sql.DataSource;
 @EnableJpaRepositories("com.RokuEng.springdata")
 public class JpaConfig {
 
-    @Value("${spring.data.url}")
-    private String DB_URL;
-    @Value("${spring.data.username}")
-    private String DB_USERNAME;
-    @Value("${spring.data.password}")
-    private String DB_PASSWORD;
-    @Value("${spring.data.driver}")
-    private String DB_DRIVER;
+	@Value("${spring.data.url}")
+	private String DB_URL;
+	@Value("${spring.data.username}")
+	private String DB_USERNAME;
+	@Value("${spring.data.password}")
+	private String DB_PASSWORD;
+	@Value("${spring.data.driver}")
+	private String DB_DRIVER;
 
-    @Value("${spring.data.packagesToScan}")
-    private String PACKAGES_TO_SCAN;
+	@Value("${spring.data.packagesToScan}")
+	private String PACKAGES_TO_SCAN;
 
-    @Value("${spring.data.persistenceUnitName}")
-    private String PERSISTENCE_UNIT_NAME;
+	@Value("${spring.data.persistenceUnitName}")
+	private String PERSISTENCE_UNIT_NAME;
 
-    @Value("${hibernate.showSQL}")
-    private Boolean SHOW_SQL;
+	@Value("${hibernate.showSQL}")
+	private Boolean SHOW_SQL;
 
-    @Value("${hibernate.generateDDL}")
-    private Boolean GENERATE_DDL;
+	@Value("${hibernate.generateDDL}")
+	private Boolean GENERATE_DDL;
 
-    @Bean
-    public DataSource dataSource() {
-        DriverManagerDataSource datasource = new DriverManagerDataSource();
+	@Bean
+	public DataSource dataSource() {
+		DriverManagerDataSource datasource = new DriverManagerDataSource();
 
-        datasource.setDriverClassName(DB_DRIVER);
-        datasource.setUsername(DB_USERNAME);
-        datasource.setPassword(DB_PASSWORD);
-        datasource.setUrl(DB_URL);
+		datasource.setDriverClassName(DB_DRIVER);
+		datasource.setUsername(DB_USERNAME);
+		datasource.setPassword(DB_PASSWORD);
+		datasource.setUrl(DB_URL);
 
-        return datasource;
-    }
+		return datasource;
+	}
 
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
+	@Bean
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+		LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
 
-        entityManagerFactory.setDataSource(dataSource());
-        entityManagerFactory.setJpaVendorAdapter(vendorAdaptor());
-        entityManagerFactory.setPackagesToScan(PACKAGES_TO_SCAN);
-        entityManagerFactory.setPersistenceUnitName(PERSISTENCE_UNIT_NAME);
+		entityManagerFactory.setDataSource(dataSource());
+		entityManagerFactory.setJpaVendorAdapter(vendorAdaptor());
+		entityManagerFactory.setPackagesToScan(PACKAGES_TO_SCAN);
+		entityManagerFactory.setPersistenceUnitName(PERSISTENCE_UNIT_NAME);
 
-        return entityManagerFactory;
-    }
+		return entityManagerFactory;
+	}
 
-    @Bean
-    public JpaTransactionManager transactionManager(
-            EntityManagerFactory entityManagerFactory
-    ) {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory );
-        return transactionManager;
-    }
+	@Bean
+	public JpaTransactionManager transactionManager(
+		EntityManagerFactory entityManagerFactory
+	) {
+		JpaTransactionManager transactionManager = new JpaTransactionManager();
+		transactionManager.setEntityManagerFactory(entityManagerFactory);
+		return transactionManager;
+	}
 
-    private HibernateJpaVendorAdapter vendorAdaptor() {
-        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        vendorAdapter.setShowSql(SHOW_SQL);
-        vendorAdapter.setGenerateDdl(GENERATE_DDL);
-        return vendorAdapter;
-    }
+	private HibernateJpaVendorAdapter vendorAdaptor() {
+		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+		vendorAdapter.setShowSql(SHOW_SQL);
+		vendorAdapter.setGenerateDdl(GENERATE_DDL);
+		return vendorAdapter;
+	}
 }

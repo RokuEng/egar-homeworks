@@ -119,7 +119,7 @@ public interface CustomRepo<E extends Persistent<ID>, ID> extends JpaRepository<
 	default List<E> findAllEntityGraph(GraphType type, Class<E> clazz, Consumer<EntityGraph<E>> consumer) {
 		return useEntityManager(em -> {
 			Map<String, Object> p = getEntityGraphProperties(type, clazz, consumer);
-			return useCriteriaQuery(clazz, p,(cb, query, root) -> {
+			return useCriteriaQuery(clazz, p, (cb, query, root) -> {
 				query.where(cb.isNotNull(root.get("id")));
 			});
 		});
