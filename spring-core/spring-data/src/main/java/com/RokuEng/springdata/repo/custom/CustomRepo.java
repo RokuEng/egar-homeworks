@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 @NoRepositoryBean
-public interface CustomRepo<E extends Persistent<ID>, ID> extends JpaRepository<E, ID> {
+public interface CustomRepo<E extends Persistent<ID>, ID extends Serializable> extends JpaRepository<E, ID> {
 
 	Optional<E> findById(ID id);
 
