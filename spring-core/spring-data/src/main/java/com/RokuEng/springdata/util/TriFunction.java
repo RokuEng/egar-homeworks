@@ -1,4 +1,4 @@
-package util;
+package com.RokuEng.springdata.util;
 
 @FunctionalInterface
 public interface TriFunction<T, U, V,R> {
