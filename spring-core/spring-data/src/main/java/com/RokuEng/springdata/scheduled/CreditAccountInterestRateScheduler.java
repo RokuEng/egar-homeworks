@@ -6,9 +6,7 @@ import com.RokuEng.springdata.entity.account.CreditAccount;
 import com.RokuEng.springdata.service.AccountService;
 import com.RokuEng.springdata.util.Transactions;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service

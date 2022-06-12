@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 @NoRepositoryBean
-public interface CustomRepo<E extends Persistent<ID>, ID extends Serializable> extends JpaRepository<E, ID> {
+public interface CustomRepo<E extends Persistent<ID>, ID extends Serializable> {
 
 	Optional<E> findById(ID id);
 

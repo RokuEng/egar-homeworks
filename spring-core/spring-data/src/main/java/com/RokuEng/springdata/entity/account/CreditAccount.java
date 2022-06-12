@@ -18,6 +18,29 @@ public class CreditAccount extends Account {
 	@Column(name = "interest_rate")
 	private BigDecimal percentage;
 
+	@Override
+	public boolean canApply(Currency currency) {
+		return getCurrency().getAmount().compareTo(currency.getAmount()) >= 0;
+	}
+
+	@Override
+	public boolean canApply(BigDecimal decimal) {
+		return getCurrency().getAmount().compareTo(decimal) >= 0;
+	}
+
+	@Override
+	public void apply(Currency currency) {
+		if (canApplyCurrencyType(currency)) {
+			setCurrency(currency);
+		}
+	}
+
+	@Override
+	public void apply(BigDecimal bigDecimal) {
+		BigDecimal currentMoney = getCurrency().getAmount();
+		getCurrency().setAmount(currentMoney.subtract(bigDecimal));
+	}
+
 	public void applyRate() {
 		Currency currency = getCurrency();
 		BigDecimal afterApply = currency.getAmount()

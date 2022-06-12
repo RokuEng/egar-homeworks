@@ -9,10 +9,10 @@ import java.util.List;
 @Entity
 @Data
 @Inheritance(strategy = InheritanceType.JOINED)
-public class FamilyAccount extends Account {
+public class SharedAccount extends Account {
 
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "family_account_client",
+	@JoinTable(name = "familyaccount_client",
 		joinColumns = @JoinColumn(name = "family_account_id"),
 		inverseJoinColumns = @JoinColumn(name = "client_id")
 	)

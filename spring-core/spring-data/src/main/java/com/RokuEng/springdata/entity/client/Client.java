@@ -6,6 +6,7 @@ import com.RokuEng.springdata.entity.enumerable.CreditHistory;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,15 +16,15 @@ public class Client extends Person {
 
 	@Column(name = "credit_history")
 	@Enumerated(EnumType.ORDINAL)
-	private CreditHistory creditHistory;
+	private CreditHistory creditHistory = CreditHistory.UNKNOWN;
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinTable(name = "client_person",
 		joinColumns = @JoinColumn(name = "client_id"),
 		inverseJoinColumns = @JoinColumn(name = "person_id")
 	)
-	private List<Person> family;
+	private List<Person> family = new ArrayList<>();
 
-	@OneToMany(fetch = FetchType.LAZY)
-	private List<Account> accounts;
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	private List<Account> accounts = new ArrayList<>();
 }
