@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import java.util.concurrent.Executor;
 
 @Configuration
-@EnableScheduling
+//@EnableScheduling
 @EnableAspectJAutoProxy
 @ComponentScan("com.RokuEng.springdata")
 public class SpringConfig {

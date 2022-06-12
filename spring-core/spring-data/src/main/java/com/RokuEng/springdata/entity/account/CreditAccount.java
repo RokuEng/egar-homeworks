@@ -2,7 +2,8 @@ package com.RokuEng.springdata.entity.account;
 
 import com.RokuEng.springdata.entity.embeddable.Currency;
 import com.RokuEng.springdata.util.BigDecimals;
-import lombok.Data;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +13,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @Inheritance(strategy = InheritanceType.JOINED)
 public class CreditAccount extends Account {
 	@Column(name = "interest_rate")
@@ -42,11 +46,15 @@ public class CreditAccount extends Account {
 	}
 
 	public void applyRate() {
+		System.out.println(this);
+
 		Currency currency = getCurrency();
 		BigDecimal afterApply = currency.getAmount()
 			.multiply(
-				percentage.divide(BigDecimals.HUNDRED.getValue(), RoundingMode.DOWN)
+				BigDecimal.ONE.add(percentage.divide(BigDecimals.HUNDRED.getValue(), RoundingMode.DOWN))
 			);
 		currency.setAmount(afterApply);
+
+		System.out.println(this);
 	}
 }

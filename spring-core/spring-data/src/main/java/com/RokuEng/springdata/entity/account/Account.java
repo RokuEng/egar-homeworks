@@ -4,7 +4,9 @@ import com.RokuEng.springdata.entity.Persistent;
 import com.RokuEng.springdata.entity.client.Client;
 import com.RokuEng.springdata.entity.embeddable.Currency;
 import com.RokuEng.springdata.entity.enumerable.CurrencyType;
+import com.RokuEng.springdata.factory.CurrencyFactory;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.*;
@@ -16,18 +18,17 @@ import java.math.BigDecimal;
 public class Account extends Persistent<Long> implements CurrencyHolder {
 
 	@ManyToOne(fetch = FetchType.EAGER)
+	@ToString.Exclude
 	private Client owner;
 
 	@Embedded
+	@Column(nullable = false)
 	private Currency currency;
 
 	@PostConstruct
-	public void create() {
+	public void postConstruct() {
 		if (currency == null) {
-			Currency cur = new Currency();
-			cur.setAmount(BigDecimal.ZERO);
-			cur.setType(CurrencyType.RUB);
-			currency = cur;
+			currency = CurrencyFactory.of(0, CurrencyType.RUB);
 		}
 	}
 

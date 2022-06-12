@@ -43,4 +43,12 @@ public class AccountService {
 	public void putOnDeposit(Account account, BigDecimal decimal) {
 		account.putOnAccount(decimal);
 	}
+
+	public void transferMoney(Account from, Account to, Double money) {
+		BigDecimal amount = BigDecimal.valueOf(money);
+		if (from.canApply(amount.negate()) && to.canApply(amount)) {
+			from.apply(amount.negate());
+			to.apply(amount);
+		}
+	}
 }

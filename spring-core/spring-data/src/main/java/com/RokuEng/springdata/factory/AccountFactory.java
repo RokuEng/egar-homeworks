@@ -6,5 +6,5 @@ import org.springframework.stereotype.Component;
 import java.util.function.Supplier;
 
 @Component
-public interface AccountFactory extends Supplier<Account> {
+public interface AccountFactory<T extends Account> extends Supplier<T> {
 }

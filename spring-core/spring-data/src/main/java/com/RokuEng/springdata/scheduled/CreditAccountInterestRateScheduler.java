@@ -25,7 +25,9 @@ public class CreditAccountInterestRateScheduler {
 	}
 
 	private void applyInterestRate() {
-		accountService.findDebtorsAccounts().forEach(CreditAccount::applyRate);
-		accountService.findDebtorsAccounts().forEach(accountService::save);
+		accountService.findDebtorsAccounts().forEach(account -> {
+			account.applyRate();
+			accountService.save(account);
+		});
 	}
 }

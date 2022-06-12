@@ -35,7 +35,7 @@ public class EagerClientRepoImpl  implements EagerClientRepo {
 	public Optional<Client> findByIdWithFamilyAndAccounts(Integer id) {
 		return findByIdEntityGraph(id, clazz, eg -> {
 			eg.addAttributeNodes("accounts");
-			eg.addAttributeNodes("family");
+			eg.addSubgraph("family");
 		});
 	}
 

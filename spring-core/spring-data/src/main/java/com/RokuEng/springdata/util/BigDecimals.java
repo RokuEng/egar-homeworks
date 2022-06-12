@@ -11,5 +11,6 @@ import java.math.BigDecimal;
 public enum BigDecimals {
 	HUNDRED(BigDecimal.valueOf(100))
 	;
+
 	private final BigDecimal value;
 }
