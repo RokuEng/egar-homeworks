@@ -1,6 +1,5 @@
 package com.RokuEng.springdata.config;
 
-import com.RokuEng.springdata.entity.embeddable.Audit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,13 +11,13 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
-import javax.persistence.EntityListeners;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 @Configuration
 @PropertySource("classpath:application.properties")
 @EnableJpaRepositories("com.RokuEng.springdata")
+@EnableJpaAuditing
 public class JpaConfig {
 
 	@Value("${spring.data.url}")

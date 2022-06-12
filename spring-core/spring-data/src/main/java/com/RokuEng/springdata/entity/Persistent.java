@@ -1,12 +1,10 @@
 package com.RokuEng.springdata.entity;
 
-import com.RokuEng.springdata.entity.embeddable.Audit;
 import lombok.Data;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Data
@@ -16,7 +14,19 @@ public abstract class Persistent<ID extends Serializable> {
 	@Column(name = "id")
 	private ID id;
 
-	@Embedded
-	@Cascade(CascadeType.PERSIST)
-	private Audit audit = new Audit();
+	@Column(name = "create_date", nullable = false)
+	private LocalDateTime createdAt;
+
+	@Column(name = "update_date")
+	private LocalDateTime updatedAt;
+
+	@PrePersist
+	public void create() {
+		createdAt = LocalDateTime.now();
+	}
+
+	@PreUpdate
+	public void update() {
+		updatedAt = LocalDateTime.now();
+	}
 }
